@@ -171,7 +171,7 @@ def menuPrincipal():
             case 17:
                 cambiarContrasena()
             case 18:
-                actualizarDatosUsuario()
+                actualizarDatosInvitado()
 
 def cambiarContrasena():
     usuario = verificarInputConNumeros('Ingresar usuario a cambiar la contrasena: ', 'Usuario invalido. Ingrese otro usuario: ')
@@ -200,7 +200,7 @@ def cambiarContrasena():
         g.write(aEscribir)
     print('Contrasena actualizada exitosamente')
 
-def actualizarDatosUsuario():
+def actualizarDatosInvitado():
     with open('invitados.txt','r',encoding='utf-8') as f:
         datos = f.read()
         datos = datos.split('\n')

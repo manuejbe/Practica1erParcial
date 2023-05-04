@@ -70,21 +70,24 @@ def ingreso(archivo, invitados):
             apellido=verificarInputSinNumeros("Ingrese su apellido: ", "Ingreso invalido. Ingrese su apellido: ")
             dni=verificarNumeroInput("Ingrese su DNI: ", "Ingreso invalido: ")
             email=verificarInputConNumeros("Ingrese su correo electronico: ", "Ingreso invalido. Ingrese su correo electronico: ")
-            cont = 1
             with open('invitados.txt', 'r') as f :
                 data = f.read()
-                data = data.split('|')
+                data = data[:len(data)-1].split('|')
                 data = splitearLista(data, ',')
                 datosVerifican = False
             indice = 0
-            for i in range(len(data)):
-                if int(data[i][2]) == dni:
-                    datosVerifican = True
-                    indice = i
-            if datosVerifican:
-                data[indice][4] = int(data[indice][4])
-                data[indice][4] += 1
-                
+            if data != [['']]:
+                for i in range(len(data)):
+                    if int(data[i][2]) == dni:
+                        datosVerifican = True
+                        indice = i
+                if datosVerifican:
+                    data[indice][4] = int(data[indice][4])
+                    data[indice][4] += 1
+                    with open('invitados.txt', 'w') as txt :
+                        str=""
+                        str+=data[indice][0]+ "," +data[indice][1]+ ","+data[indice][2]+ ","+data[indice][3]+ ","+(int(data[indice][4])+1) + '|'
+                        txt.close()
             else:
                 txt = open(invitados,"a",encoding="utf-8")
                 txt.write(nombre + "," +apellido + "," +str(dni) + "," +email + ',' + '1'+'|')

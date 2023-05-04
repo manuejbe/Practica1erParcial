@@ -12,23 +12,24 @@ import datetime
 #c= Club('river', '1903', 'corrientes 912')
 clubes=[] #lista con OBJETOS club de la CLASE Club
 
-def ingreso(archivo):
+def ingreso(archivo, invitados):
     print("Bienvenido. Seleccione alguna de las siguientes opciones", '\n',
           "1. Registrarse",'\n',
-          "2. Iniciar sesión")
+          "2. Iniciar sesión",'\n',
+          "3. Ingresar como invitado")
     opcion = verificarNumeroInput("Ingrese la opción: ", "Opcion invalida. Ingrese la opcion que desea elegir: ")
-    while opcion not in range(1,3):
+    while opcion not in range(1,4):
         print("Opcion invalida")
         opcion = verificarNumeroInput("Ingrese la opción: ", "Opcion invalida. Ingrese la opcion que desea elegir: ")
-    usuario = input("Ingrese usuario: ")
-    txt = open(archivo,"r",encoding="utf-8")
-    matrizUsuCon = []
-    for linea in txt:
-        uc = linea[:-1].split(" ")
-        matrizUsuCon.append(uc)
-    txt.close()
     match opcion:
         case 1:
+            usuario = input("Ingrese usuario: ")
+            txt = open(archivo,"r",encoding="utf-8")
+            matrizUsuCon = []
+            for linea in txt:
+                uc = linea[:-1].split(" ")
+                matrizUsuCon.append(uc)
+            txt.close()
             esta=True
             while esta==True:
                 encontro = False
@@ -40,11 +41,21 @@ def ingreso(archivo):
                 else:
                     esta=False
             contrasenia = input("Ingrese contraseña: ")
+            nombre=verificarInputSinNumeros("Ingrese su nombre: ", "Ingreso invalido. Ingrese su nombre: ")
+            apellido=verificarInputSinNumeros("Ingrese su apellido: ", "Ingreso invalido. Ingrese su apellido: ")
+            dni=verificarNumeroInput("Ingrese su DNI: ", "Ingreso invalido: ")
+            email=verificarInputConNumeros("Ingrese su correo electronico: ", "Ingreso invalido. Ingrese su correo electronico: ")
             txt = open(archivo,"a",encoding="utf-8")
-            txt.write(usuario + " " + contrasenia + '\n')
+            txt.write(usuario + " " + contrasenia + " " + nombre + " " +apellido + " " +str(dni) + " " +email +'\n')
             txt.close()
-            menuPrincipal()
         case 2:
+            usuario = input("Ingrese usuario: ")
+            txt = open(archivo,"r",encoding="utf-8")
+            matrizUsuCon = []
+            for linea in txt:
+                uc = linea[:-1].split(" ")
+                matrizUsuCon.append(uc)
+            txt.close()
             sesionIniciada = False
             while (sesionIniciada==False):
                 contrasenia = input("Ingrese contraseña: ")
@@ -54,7 +65,15 @@ def ingreso(archivo):
                 if sesionIniciada == False:
                     print("Usuario o contraseña incorrectos. Ingrese los datos nuevamente:")
                     usuario = input("Ingrese usuario: ")
-            menuPrincipal()
+        case 3:
+            nombre=verificarInputSinNumeros("Ingrese su nombre: ", "Ingreso invalido. Ingrese su nombre: ")
+            apellido=verificarInputSinNumeros("Ingrese su apellido: ", "Ingreso invalido. Ingrese su apellido: ")
+            dni=verificarNumeroInput("Ingrese su DNI: ", "Ingreso invalido: ")
+            email=verificarInputConNumeros("Ingrese su correo electronico: ", "Ingreso invalido. Ingrese su correo electronico: ")
+            txt = open(invitados,"a",encoding="utf-8")
+            txt.write(nombre + " " +apellido + " " +str(dni) + " " +email + '\n')
+            txt.close()
+    menuPrincipal()
             
 
 
@@ -460,6 +479,6 @@ def consultarReservas():
     for r in range(len(clubes[datos1[1]].lista_instalaciones[datos2[1]].lista_reservas)):
         print("Fecha:", clubes[datos1[1]].lista_instalaciones[datos2[1]].lista_reservas[r].fecha, ", Hora:", clubes[datos1[1]].lista_instalaciones[datos2[1]].lista_reservas[r].hora,", Numero de reserva:", clubes[datos1[1]].lista_instalaciones[datos2[1]].lista_reservas[r].nroReserva,'\n')
 
-ingreso("archivo.txt")
+ingreso("archivo.txt", "invitados.txt")
 
 

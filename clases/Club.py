@@ -105,7 +105,7 @@ class Club:
                     if len(inst[i]) > 1:
                         for r in range(len(inst[i])-1):
                             rdate = datetime.date(int(inst[i][r+1][0]), int(inst[i][r+1][1]), int(inst[i][r+1][2]))
-                            self.lista_instalaciones[i].agregarReserva(Reserva(rdate, inst[i][r+1][1], inst[i][r+1][2]))
+                            self.lista_instalaciones[i].lista_reservas.append(Reserva(rdate, inst[i][r+1][1], inst[i][r+1][2]))
             if pagos[0] != ['']:
                 for p in pagos:
                     d = datetime.date(int(p[1]), int(p[2]), int(p[3]))

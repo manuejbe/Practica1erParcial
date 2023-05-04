@@ -12,6 +12,33 @@ import datetime
 #c= Club('river', '1903', 'corrientes 912')
 clubes=[] #lista con OBJETOS club de la CLASE Club
 
+
+
+
+def case3():
+    nombre=verificarInputSinNumeros("Ingrese su nombre: ", "Ingreso invalido. Ingrese su nombre: ")
+    apellido=verificarInputSinNumeros("Ingrese su apellido: ", "Ingreso invalido. Ingrese su apellido: ")
+    dni=verificarNumeroInput("Ingrese su DNI: ", "Ingreso invalido: ")
+    email=verificarInputConNumeros("Ingrese su correo electronico: ", "Ingreso invalido. Ingrese su correo electronico: ")
+    stringCompleto = ''
+    with open('invitados.txt', 'r') as f:
+        data = f.read()
+        data=data.split('\n')
+        data = splitearLista(data, ',')
+        encontro = False
+        for i in range(len(data)):
+            if data[i] != [''] and int(data[i][2]) == dni:
+                data[i][4] = int(data[i][4]) + 1
+                encontro = True
+        if not encontro:
+            datosInvitado = [nombre, apellido, dni, email, 1]
+            data.append(datosInvitado)
+    for i in range(len(data)):
+        if data[i]!=['']:
+            stringCompleto += data[i][0] + ',' + data[i][1] + ',' + str(data[i][2]) + ',' + data[i][3] + ',' + str(data[i][4]) + '\n'
+    with open('invitados.txt', 'w') as g:
+        g.write(stringCompleto)
+
 def ingreso(archivo, invitados):
     print("Bienvenido. Seleccione alguna de las siguientes opciones", '\n',
           "1. Registrarse",'\n',
@@ -66,27 +93,7 @@ def ingreso(archivo, invitados):
                     print("Usuario o contraseña incorrectos. Ingrese los datos nuevamente:")
                     usuario = input("Ingrese usuario: ")
         case 3:
-            nombre=verificarInputSinNumeros("Ingrese su nombre: ", "Ingreso invalido. Ingrese su nombre: ")
-            apellido=verificarInputSinNumeros("Ingrese su apellido: ", "Ingreso invalido. Ingrese su apellido: ")
-            dni=verificarNumeroInput("Ingrese su DNI: ", "Ingreso invalido: ")
-            email=verificarInputConNumeros("Ingrese su correo electronico: ", "Ingreso invalido. Ingrese su correo electronico: ")
-            stringCompleto = ''
-            with open('invitados.txt', 'r') as f:
-                data = f.readlines()
-                data = splitearLista(data, ',')
-                encontro = False
-                for i in range(len(data)):
-                    if data[i] != [''] and int(data[i][2]) == dni:
-                        data[i][4] = int(data[i][4]) + 1
-                        encontro = True
-                if not encontro:
-                    datosInvitado = [nombre, apellido, dni, email, 1]
-                    data.append(datosInvitado)
-            
-            for i in range(len(data)):
-                stringCompleto += data[i][0] + ',' + data[i][1] + ',' + str(data[i][2]) + ',' + data[i][3] + ',' + str(data[i][4]) + '\n'
-            with open('invitados.txt', 'w') as g:
-                g.write(stringCompleto)
+            case3()
                 
 
                 
@@ -119,11 +126,11 @@ def menuPrincipal():
           "14: Crear reserva en una instalacion", '\n', 
           "15: Consultar reservas en una instalacion de un club", '\n',
           "16: Ver un grafico de los socios divididos por rango etario de un club" ,'\n',
-          "17: Cambiar contrasena de usuario"
-
+          "17: Cambiar contrasena de usuario",'\n',
+          "18: Actualizar datos de invitado"
           )
         opcionElegida=verificarOpcionMenu("Ingrese el numero segun la opcion que quiera elegir o 0 para cerrar sesion y finalizar: ", "Opcion invalida. Ingrese el numero segun la opcion que quiera elegir o 0 para cerrar sesion y finalizar: ")
-        while opcionElegida not in range(18):
+        while opcionElegida not in range(19):
             print("Opcion invalida")
             opcionElegida=verificarOpcionMenu("Ingrese el numero segun la opcion que quiera elegir o 0 para cerrar sesion y finalizar: ", "Opcion invalida. Ingrese el numero segun la opcion que quiera elegir o 0 para cerrar sesion y finalizar: ")
         match opcionElegida:
@@ -163,6 +170,8 @@ def menuPrincipal():
                 graficoEdades()
             case 17:
                 cambiarContrasena()
+            case 18:
+                actualizarDatosUsuario()
 
 def cambiarContrasena():
     usuario = verificarInputConNumeros('Ingresar usuario a cambiar la contrasena: ', 'Usuario invalido. Ingrese otro usuario: ')
@@ -190,6 +199,38 @@ def cambiarContrasena():
     with open('archivo.txt','w',encoding='utf-8') as g:
         g.write(aEscribir)
     print('Contrasena actualizada exitosamente')
+
+def actualizarDatosUsuario():
+    with open('invitados.txt','r',encoding='utf-8') as f:
+        datos = f.read()
+        datos = datos.split('\n')
+        datos = splitearLista(datos, ',')
+        encontrado = False
+        dni = verificarNumeroInput('Ingresar DNI del usuario a actualizar los datos: ', 'Usuario invalido. Ingrese DNI del usuario para actualizar sus datos: ')
+        correo=verificarInputConNumeros("Ingrese el correo del invitado al que le quiere actualizar los datos: ", "Correo invalido. Ingrese el correo del invitado al que le quiere actualizar los datos: ")
+        for i in range(len(datos)):
+            if datos[i] != [''] and int(datos[i][2]) == dni and datos[i][3] == correo:
+                encontrado = True
+                indice = i
+        if not encontrado:
+            print("El invitado no esta registrado")
+            case3()
+        else:
+            print("Actualizacion de datos")
+            nombre = verificarInputSinNumeros('Ingresar su nombre para actualizarlo: ', 'Nombre invalido. Ingrese su nombre para actualizarlo: ')
+            apellido = verificarInputSinNumeros('Ingresar su apellido para actualizarlo: ', 'Apellido invalido. Ingrese su apellido para actualizarlo: ')
+            correo=verificarInputConNumeros("Ingrese su correo para actualizarlo: ", "Correo invalido. Ingrese su correo para actualizarlo: ")
+            datos[indice][0] = nombre
+            datos[indice][1] = apellido
+            datos[indice][3]= correo
+            aEscribir = ''
+            for j in range(len(datos)):
+                if datos[j] != ['']:
+                    aEscribir += datos[j][0] +' ' + datos[j][1] +' ' + datos[j][2] +' ' + datos[j][3] +' ' + datos[j][4] + '\n'
+
+            with open('invitados.txt','w',encoding='utf-8') as g:
+                g.write(aEscribir)
+            print('Invitado actualizado exitosamente')
 
 def verificarExistenciaClub(nombreClub):
     existe=False
@@ -522,7 +563,7 @@ def consultarReservas():
         codigoInstalacionInt=verificarNumeroInput("Ingrese el codigo de la instalacion que desea consultar las reservas: ", "Codigo invalido. Ingrese el codigo de la instalacion que desea consultar las reservas: ")
         datos2=verificarExistenciaInstalacion(codigoInstalacionInt, datos1[1])
     for r in range(len(clubes[datos1[1]].lista_instalaciones[datos2[1]].lista_reservas)):
-        print("Fecha:", clubes[datos1[1]].lista_instalaciones[datos2[1]].lista_reservas[r].fecha, ", Hora:", clubes[datos1[1]].lista_instalaciones[datos2[1]].lista_reservas[r].hora,", Numero de reserva:", clubes[datos1[1]].lista_instalaciones[datos2[1]].lista_reservas[r].nroReserva,'\n')
+        print("Fecha (YYYY-MM-DD):", clubes[datos1[1]].lista_instalaciones[datos2[1]].lista_reservas[r].fechaReserva, ", Hora:", clubes[datos1[1]].lista_instalaciones[datos2[1]].lista_reservas[r].horaReserva,", Numero de reserva:", clubes[datos1[1]].lista_instalaciones[datos2[1]].lista_reservas[r].nroReserva,'\n')
 
 ingreso("archivo.txt", "invitados.txt")
 

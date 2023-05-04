@@ -70,28 +70,26 @@ def ingreso(archivo, invitados):
             apellido=verificarInputSinNumeros("Ingrese su apellido: ", "Ingreso invalido. Ingrese su apellido: ")
             dni=verificarNumeroInput("Ingrese su DNI: ", "Ingreso invalido: ")
             email=verificarInputConNumeros("Ingrese su correo electronico: ", "Ingreso invalido. Ingrese su correo electronico: ")
-            with open('invitados.txt', 'r') as f :
-                data = f.read()
-                data = data[:len(data)-1].split('|')
+            stringCompleto = ''
+            with open('invitados.txt', 'r') as f:
+                data = f.readlines()
                 data = splitearLista(data, ',')
-                datosVerifican = False
-            indice = 0
-            if data != [['']]:
+                encontro = False
                 for i in range(len(data)):
-                    if int(data[i][2]) == dni:
-                        datosVerifican = True
-                        indice = i
-                if datosVerifican:
-                    data[indice][4] = int(data[indice][4])
-                    data[indice][4] += 1
-                    with open('invitados.txt', 'w') as txt :
-                        str=""
-                        str+=data[indice][0]+ "," +data[indice][1]+ ","+data[indice][2]+ ","+data[indice][3]+ ","+(int(data[indice][4])+1) + '|'
-                        txt.close()
-            else:
-                txt = open(invitados,"a",encoding="utf-8")
-                txt.write(nombre + "," +apellido + "," +str(dni) + "," +email + ',' + '1'+'|')
-                txt.close()
+                    if data[i] != [''] and int(data[i][2]) == dni:
+                        data[i][4] = int(data[i][4]) + 1
+                        encontro = True
+                if not encontro:
+                    datosInvitado = [nombre, apellido, dni, email, 1]
+                    data.append(datosInvitado)
+            
+            for i in range(len(data)):
+                stringCompleto += data[i][0] + ',' + data[i][1] + ',' + str(data[i][2]) + ',' + data[i][3] + ',' + str(data[i][4]) + '\n'
+            with open('invitados.txt', 'w') as g:
+                g.write(stringCompleto)
+                
+
+                
     menuPrincipal()
             
 
@@ -120,11 +118,12 @@ def menuPrincipal():
           "13: Consultar pagos de un club", '\n',
           "14: Crear reserva en una instalacion", '\n', 
           "15: Consultar reservas en una instalacion de un club", '\n',
-          "16: Ver un grafico de los socios divididos por rango etario de un club"
+          "16: Ver un grafico de los socios divididos por rango etario de un club" ,'\n',
+          "17: Cambiar contrasena de usuario"
 
           )
         opcionElegida=verificarOpcionMenu("Ingrese el numero segun la opcion que quiera elegir o 0 para cerrar sesion y finalizar: ", "Opcion invalida. Ingrese el numero segun la opcion que quiera elegir o 0 para cerrar sesion y finalizar: ")
-        while opcionElegida not in range(17):
+        while opcionElegida not in range(18):
             print("Opcion invalida")
             opcionElegida=verificarOpcionMenu("Ingrese el numero segun la opcion que quiera elegir o 0 para cerrar sesion y finalizar: ", "Opcion invalida. Ingrese el numero segun la opcion que quiera elegir o 0 para cerrar sesion y finalizar: ")
         match opcionElegida:
@@ -162,8 +161,35 @@ def menuPrincipal():
                 consultarReservas()
             case 16:
                 graficoEdades()
+            case 17:
+                cambiarContrasena()
 
+def cambiarContrasena():
+    usuario = verificarInputConNumeros('Ingresar usuario a cambiar la contrasena: ', 'Usuario invalido. Ingrese otro usuario: ')
+    with open('archivo.txt','r',encoding='utf-8') as f:
+        datos = f.read()
+        datos = datos.split('\n')
+        datos = splitearLista(datos, ' ')
+        encontrado = False
+        texto = 'Ingresar contrasena actual:'
+        while not encontrado:
+            contrasenaActual = verificarInputConNumeros(texto, 'Contrasena actual invalida. Ingrese otra contrasena: ')
+            for i in range(len(datos)):
+                if datos[i] != [''] and datos[i][0] == usuario and datos[i][1] == contrasenaActual:
+                    encontrado = True
+                    indice = i
+                texto = 'Contrasena actual invalida. Ingresar otra contrasena: '
+            
+        contrasenaNueva = verificarInputConNumeros('Ingresar contrasena nueva: ', 'Contrasena actual invalida. Ingrese otra contrasena: ')
+        datos[indice][1] = contrasenaNueva
+        aEscribir = ''
+        for j in range(len(datos)):
+            if datos[j] != ['']:
+                aEscribir += datos[j][0] +' ' + datos[j][1] +' ' + datos[j][2] +' ' + datos[j][3] +' ' + datos[j][4] +' ' + datos[j][5] + '\n'
 
+    with open('archivo.txt','w',encoding='utf-8') as g:
+        g.write(aEscribir)
+    print('Contrasena actualizada exitosamente')
 
 def verificarExistenciaClub(nombreClub):
     existe=False

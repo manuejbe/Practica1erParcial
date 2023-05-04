@@ -8,7 +8,6 @@ from clases.Socio import Socio
 import matplotlib.pyplot as plt
 from datetime import date
 import datetime
-import matplotlib.pyplot as plt
 
 #c= Club('river', '1903', 'corrientes 912')
 clubes=[] #lista con OBJETOS club de la CLASE Club
